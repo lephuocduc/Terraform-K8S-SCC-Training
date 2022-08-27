@@ -1,7 +1,7 @@
 #Create public ip for VM
 resource "azurerm_public_ip" "pip" {
   count = var.number_VM
-  name                = "Ubuntu-publicip-${format("%02d", count.index)}"
+  name                = "Ubuntu-publicip-${format(“%02d”, count.index)}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
@@ -11,7 +11,7 @@ resource "azurerm_public_ip" "pip" {
 #Create Network Security Group and rule
 resource "azurerm_network_security_group" "NetworkNSG" {
   count = var.number_VM
-  name                = "Ubuntu-NSG-${format("%02d", count.index)}"
+  name                = "Ubuntu-NSG-${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -31,7 +31,7 @@ resource "azurerm_network_security_group" "NetworkNSG" {
 #Create NIC for VM
 resource "azurerm_network_interface" "nic" {
   count = var.number_VM
-  name                = "Ubuntu-nic-${format("%02d", count.index)}"
+  name                = "Ubuntu-nic-${count.index}"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -39,21 +39,20 @@ resource "azurerm_network_interface" "nic" {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.subnet.id
     private_ip_address_allocation = "Dynamic"
-    public_ip_address_id          = element(azurerm_public_ip.pip.*.id, count.index)
+    public_ip_address_id          = azurerm_public_ip.pip[count.index].id
   }
 }
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "NSG-NIC" {
-  count = var.number_VM
-  network_interface_id      = element(azurerm_network_interface.nic.*.id, count.index)
-  network_security_group_id = element(azurerm_network_security_group.NetworkNSG.*.id, count.index)
+  network_interface_id      = azurerm_network_interface.nic[count.index].id
+  network_security_group_id = azurerm_network_security_group.NetworkNSG[count.index].id
 }
 
 #Create Linux VM
 resource "azurerm_linux_virtual_machine" "linux_VM" {
   count = var.number_VM
-  name                = "Ubuntu-${format("%02d", count.index)}"
+  name                = "Ubuntu-${count.index}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_DS1_v2"
@@ -62,12 +61,12 @@ resource "azurerm_linux_virtual_machine" "linux_VM" {
   disable_password_authentication = false
 
   network_interface_ids = [
-    element(azurerm_network_interface.nic.*.id, count.index)
+    azurerm_network_interface.nic[count.index].id,
   ]
 
   os_disk {
     count = var.number_VM
-    name                 = "Ubuntu-OsDisk-${format("%02d", count.index)}"
+    name                 = "Ubuntu-OsDisk-${count.index}"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }

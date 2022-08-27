@@ -53,7 +53,7 @@ resource "azurerm_network_interface_security_group_association" "NSG-NIC" {
 #Create Linux VM
 resource "azurerm_linux_virtual_machine" "linux_VM" {
   count = var.number_VM
-  name                = "Ubuntu-${format("%02d", count.index)}"
+  name                = "Ubuntu-${count.index}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_DS1_v2"
@@ -62,12 +62,12 @@ resource "azurerm_linux_virtual_machine" "linux_VM" {
   disable_password_authentication = false
 
   network_interface_ids = [
-    element(azurerm_network_interface.nic.*.id, count.index)
+    azurerm_network_interface.nic[count.index].id,
   ]
 
   os_disk {
     count = var.number_VM
-    name                 = "Ubuntu-OsDisk-${format("%02d", count.index)}"
+    name                 = "Ubuntu-OsDisk-${count.index}"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }

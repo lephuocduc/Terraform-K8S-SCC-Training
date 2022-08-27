@@ -67,7 +67,7 @@ resource "azurerm_linux_virtual_machine" "linux_VM" {
 
   os_disk {
     count = var.number_VM
-    name                 = "Ubuntu-OsDisk-${format("%02d", count.index)}"
+    name                 = "Ubuntu-OsDisk-${count.index}"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }

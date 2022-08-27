@@ -6,8 +6,7 @@ variable "location" {
   description = "Location of the resource"
 }
 
-variable "number_VM" {
-  type = number
-  default = 1
-  description = "Number of VM to create"
+variable "vm_name" {
+  description = "VM Names"
+  default = ["VM1","VM2","VM3"]
 }
