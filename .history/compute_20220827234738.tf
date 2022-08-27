@@ -45,8 +45,8 @@ resource "azurerm_network_interface" "nic" {
 
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "NSG-NIC" {
-  network_interface_id      = azurerm_network_interface.nic.id
-  network_security_group_id = azurerm_network_security_group.NetworkNSG.id
+  network_interface_id      = azurerm_network_interface.nic[count.index].id
+  network_security_group_id = azurerm_network_security_group.NetworkNSG[count.index].id
 }
 
 #Create Linux VM
