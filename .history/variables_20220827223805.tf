@@ -6,6 +6,6 @@ variable "location" {
   description = "Location of the resource"
 }
 
-variable "number_VM" {
- description = "Number of VM to create"
+variable "nb_webapp" {
+ description = "Number of App Service to create"
 }

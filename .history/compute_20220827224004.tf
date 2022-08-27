@@ -1,7 +1,6 @@
 #Create public ip for VM
 resource "azurerm_public_ip" "pip" {
-  count = var.number_VM
-  name                = "Ubuntu-publicip-${count.index}"
+  name                = "publicip"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
@@ -10,8 +9,7 @@ resource "azurerm_public_ip" "pip" {
 
 #Create Network Security Group and rule
 resource "azurerm_network_security_group" "NetworkNSG" {
-  count = var.number_VM
-  name                = "Ubuntu-NSG-${count.index}"
+  name                = "myNetworkSecurityGroup"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -30,8 +28,7 @@ resource "azurerm_network_security_group" "NetworkNSG" {
 
 #Create NIC for VM
 resource "azurerm_network_interface" "nic" {
-  count = var.number_VM
-  name                = "Ubuntu-nic-${count.index}"
+  name                = "VM-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -65,8 +62,7 @@ resource "azurerm_linux_virtual_machine" "linux_VM" {
   ]
 
   os_disk {
-    count = var.number_VM
-    name                 = "Ubuntu-OsDisk-${count.index}"
+    name                 = "myOsDisk"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }

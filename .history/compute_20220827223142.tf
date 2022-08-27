@@ -1,37 +1,15 @@
 #Create public ip for VM
 resource "azurerm_public_ip" "pip" {
-  count = var.number_VM
-  name                = "Ubuntu-publicip-${count.index}"
+  name                = "publicip"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
   sku = "Basic"
 }
 
-#Create Network Security Group and rule
-resource "azurerm_network_security_group" "NetworkNSG" {
-  count = var.number_VM
-  name                = "Ubuntu-NSG-${count.index}"
-  location            = azurerm_resource_group.rg.location
-  resource_group_name = azurerm_resource_group.rg.name
-
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-}
-
 #Create NIC for VM
 resource "azurerm_network_interface" "nic" {
-  count = var.number_VM
-  name                = "Ubuntu-nic-${count.index}"
+  name                = "VM-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
@@ -43,16 +21,9 @@ resource "azurerm_network_interface" "nic" {
   }
 }
 
-# Connect the security group to the network interface
-resource "azurerm_network_interface_security_group_association" "NSG-NIC" {
-  network_interface_id      = azurerm_network_interface.nic.id
-  network_security_group_id = azurerm_network_security_group.NetworkNSG.id
-}
-
 #Create Linux VM
 resource "azurerm_linux_virtual_machine" "linux_VM" {
-  count = var.number_VM
-  name                = "Ubuntu-${count.index}"
+  name                = "Ubuntu"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   size                = "Standard_DS1_v2"
@@ -65,8 +36,7 @@ resource "azurerm_linux_virtual_machine" "linux_VM" {
   ]
 
   os_disk {
-    count = var.number_VM
-    name                 = "Ubuntu-OsDisk-${count.index}"
+    name                 = "myOsDisk"
     caching              = "ReadWrite"
     storage_account_type = "Premium_LRS"
   }

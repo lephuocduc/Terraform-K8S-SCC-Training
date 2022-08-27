@@ -30,8 +30,7 @@ resource "azurerm_network_security_group" "NetworkNSG" {
 
 #Create NIC for VM
 resource "azurerm_network_interface" "nic" {
-  count = var.number_VM
-  name                = "Ubuntu-nic-${count.index}"
+  name                = "VM-nic"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
