@@ -8,6 +8,5 @@ variable "location" {
 
 variable "number_VM" {
   type = Number
-  default = 1
  description = "Number of VM to create"
 }
