@@ -51,7 +51,7 @@ resource "azurerm_network_interface_security_group_association" "NSG-NIC" {
 
 #Create Linux VM
 resource "azurerm_linux_virtual_machine" "linux_VM" {
-  count = 2
+  count = var.number_VM
   name                = "Ubuntuu-${count.index}"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
