@@ -46,7 +46,7 @@ resource "azurerm_network_interface" "nic" {
 # Connect the security group to the network interface
 resource "azurerm_network_interface_security_group_association" "NSG-NIC" {
   network_interface_id      = azurerm_network_interface.nic[count.index].id
-  network_security_group_id = azurerm_network_security_group.NetworkNSG[count.index].id
+  network_security_group_id = azurerm_network_security_group.NetworkNSG.id
 }
 
 #Create Linux VM
@@ -61,7 +61,7 @@ resource "azurerm_linux_virtual_machine" "linux_VM" {
   disable_password_authentication = false
 
   network_interface_ids = [
-    azurerm_network_interface.nic[count.index].id,
+    azurerm_network_interface.nic.id,
   ]
 
   os_disk {
